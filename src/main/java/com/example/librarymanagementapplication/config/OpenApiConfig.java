@@ -1,0 +1,4 @@
+package com.example.librarymanagementapplication.config;
+
+public class OpenApiConfig {
+}
