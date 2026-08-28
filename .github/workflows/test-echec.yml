@@ -1,4 +1,4 @@
-name: Test Echec CI
+name: Test Echec CI Multiple
 on:
   push:
     branches: [ main ]
@@ -9,7 +9,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Etape qui echoue volontairement
+
+      - name: Etape 1 - Erreur de dependance manquante
+        continue-on-error: true
         run: |
-          echo "Simulation d'une erreur de build"
+          echo "Installation des dependances..."
+          echo "npm ERR! code ENOENT"
+          echo "npm ERR! Impossible de trouver le module 'axios' dans le registre"
+          exit 1
+
+      - name: Etape 2 - Echec de test unitaire
+        continue-on-error: true
+        run: |
+          echo "Execution des tests..."
+          echo "FAIL tests/user.test.js"
+          echo "  Utilisateur > devrait creer un compte"
+          echo "    Expected: 201"
+          echo "    Received: 500"
+          exit 1
+
+      - name: Etape 3 - Erreur de permission au deploiement
+        continue-on-error: true
+        run: |
+          echo "Deploiement du build..."
+          echo "Error: EACCES: permission denied, open '/var/www/dist/index.html'"
+          exit 1
+
+      - name: Etape finale - confirme l'echec global du run
+        run: |
+          echo "Plusieurs etapes ont echoue au cours de ce run."
           exit 1
